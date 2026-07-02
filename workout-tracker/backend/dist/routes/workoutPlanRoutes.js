@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const workoutPlanController_1 = require("../controllers/workoutPlanController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const router = (0, express_1.Router)();
+router.use(authMiddleware_1.protect);
+router.get('/', workoutPlanController_1.listWorkoutPlans);
+router.get('/:id', workoutPlanController_1.getWorkoutPlan);
+router.post('/', workoutPlanController_1.addWorkoutPlan);
+router.put('/:id', workoutPlanController_1.editWorkoutPlan);
+router.patch('/:id/exercises/:exerciseId/toggle', workoutPlanController_1.toggleWorkoutPlanExerciseStatus);
+router.delete('/:id', workoutPlanController_1.removeWorkoutPlan);
+exports.default = router;
