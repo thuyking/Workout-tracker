@@ -10,5 +10,6 @@ router.get('/:id/progress', workoutController_1.getWorkoutProgressStats);
 router.get('/:id', workoutController_1.getWorkout);
 router.post('/', workoutController_1.addWorkout);
 router.put('/:id', workoutController_1.editWorkout);
+router.delete('/bulk', workoutController_1.removeWorkouts);
 router.delete('/:id', workoutController_1.removeWorkout);
 exports.default = router;

@@ -1,4 +1,5 @@
 import {
+  CloseOutlined,
   DeleteOutlined,
   CalendarOutlined,
   HistoryOutlined,
@@ -18,13 +19,18 @@ import {
   type MenuProps,
   type TableProps,
 } from 'antd'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import LanguageSelect from '../../../shared/components/LanguageSelect'
 import { useTranslation } from '../../../shared/i18n/useTranslation'
 import { useAuthStore } from '../../../stores/authStore'
-import { deleteWorkout, getWorkouts, type Workout } from '../api/workoutApi'
+import {
+  deleteWorkout,
+  deleteWorkouts,
+  getWorkouts,
+  type Workout,
+} from '../api/workoutApi'
 import AddWorkoutButton from '../components/AddWorkoutButton'
 import CopyWorkoutButton from '../components/CopyWorkoutButton'
 import ViewWorkoutButton from '../components/ViewWorkoutButton'
@@ -75,6 +81,7 @@ function DashboardPage() {
   const logout = useAuthStore((state) => state.logout)
   const user = useAuthStore((state) => state.user)
   const queryClient = useQueryClient()
+  const [selectedWorkoutIds, setSelectedWorkoutIds] = useState<string[]>([])
   const openModal = useWorkoutUiStore((state) => state.openModal)
   const closeModal = useWorkoutUiStore((state) => state.closeModal)
   const { t } = useTranslation()
@@ -90,7 +97,20 @@ function DashboardPage() {
 
   const deleteMutation = useMutation({
     mutationFn: deleteWorkout,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workouts'] }),
+    onSuccess: (_, deletedWorkoutId) => {
+      setSelectedWorkoutIds((currentIds) => (
+        currentIds.filter((id) => id !== deletedWorkoutId)
+      ))
+      queryClient.invalidateQueries({ queryKey: ['workouts'] })
+    },
+  })
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: deleteWorkouts,
+    onSuccess: () => {
+      setSelectedWorkoutIds([])
+      queryClient.invalidateQueries({ queryKey: ['workouts'] })
+    },
   })
 
   const menuItems: MenuProps['items'] = [
@@ -249,12 +269,50 @@ function DashboardPage() {
         </div>
 
         <div className="fit-panel fit-table-wrap">
+          {selectedWorkoutIds.length > 0 ? (
+            <div className="mb-4 flex flex-col gap-3 rounded-lg border border-red-100 bg-red-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+              <Typography.Text>
+                {t('workout.selectedCount', { count: selectedWorkoutIds.length })}
+              </Typography.Text>
+              <Space>
+                <Button
+                  icon={<CloseOutlined />}
+                  onClick={() => setSelectedWorkoutIds([])}
+                >
+                  {t('actions.clearSelection')}
+                </Button>
+                <Popconfirm
+                  title={t('workout.bulkDeleteConfirm', {
+                    count: selectedWorkoutIds.length,
+                  })}
+                  cancelText={t('actions.cancel')}
+                  onConfirm={() => bulkDeleteMutation.mutate(selectedWorkoutIds)}
+                >
+                  <Button
+                    danger
+                    type="primary"
+                    icon={<DeleteOutlined />}
+                    loading={bulkDeleteMutation.isPending}
+                  >
+                    {t('actions.deleteSelected')}
+                  </Button>
+                </Popconfirm>
+              </Space>
+            </div>
+          ) : null}
+
           <Table
             columns={columns}
             dataSource={workouts}
             loading={isLoading}
             pagination={{ pageSize: 8 }}
             rowKey="_id"
+            rowSelection={{
+              selectedRowKeys: selectedWorkoutIds,
+              onChange: (selectedRowKeys) => {
+                setSelectedWorkoutIds(selectedRowKeys.map(String))
+              },
+            }}
             scroll={{ x: 920 }}
           />
         </div>

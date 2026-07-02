@@ -81,3 +81,9 @@ export const updateWorkout = async (
 export const deleteWorkout = async (id: string): Promise<void> => {
   await axiosClient.delete(`/workouts/${id}`)
 }
+
+export const deleteWorkouts = async (ids: string[]): Promise<void> => {
+  await axiosClient.delete('/workouts/bulk', {
+    data: { ids },
+  })
+}

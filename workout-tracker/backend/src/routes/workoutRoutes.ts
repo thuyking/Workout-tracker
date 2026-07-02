@@ -7,6 +7,7 @@ import {
   getWorkoutProgressStats,
   listWorkouts,
   removeWorkout,
+  removeWorkouts,
 } from '../controllers/workoutController'
 import { protect } from '../middlewares/authMiddleware'
 
@@ -19,6 +20,7 @@ router.get('/:id/progress', getWorkoutProgressStats)
 router.get('/:id', getWorkout)
 router.post('/', addWorkout)
 router.put('/:id', editWorkout)
+router.delete('/bulk', removeWorkouts)
 router.delete('/:id', removeWorkout)
 
 export default router

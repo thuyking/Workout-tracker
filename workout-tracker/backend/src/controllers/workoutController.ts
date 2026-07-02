@@ -4,6 +4,7 @@ import type { AuthRequest } from '../middlewares/authMiddleware'
 import {
   createWorkout,
   deleteWorkout,
+  deleteWorkouts,
   getWorkoutProgress,
   getWorkoutById,
   getWorkouts,
@@ -154,6 +155,35 @@ export const removeWorkout = async (
   } catch (error) {
     res.status(500).json({
       message: error instanceof Error ? error.message : 'Failed to delete workout',
+    })
+  }
+}
+
+export const removeWorkouts = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { ids } = req.body
+
+    if (
+      !Array.isArray(ids)
+      || ids.length === 0
+      || ids.some((id) => typeof id !== 'string' || id.trim() === '')
+    ) {
+      res.status(400).json({ message: 'Workout ids are required' })
+      return
+    }
+
+    const result = await deleteWorkouts(getUserId(req), ids)
+
+    res.status(200).json({
+      message: 'Workouts deleted',
+      deletedCount: result.deletedCount,
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: error instanceof Error ? error.message : 'Failed to delete workouts',
     })
   }
 }

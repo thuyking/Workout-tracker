@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeWorkout = exports.editWorkout = exports.addWorkout = exports.getWorkoutProgressStats = exports.getWorkout = exports.listWorkouts = void 0;
+exports.removeWorkouts = exports.removeWorkout = exports.editWorkout = exports.addWorkout = exports.getWorkoutProgressStats = exports.getWorkout = exports.listWorkouts = void 0;
 const workoutService_1 = require("../services/workoutService");
 const getUserId = (req) => {
     if (!req.userId) {
@@ -116,3 +116,25 @@ const removeWorkout = async (req, res) => {
     }
 };
 exports.removeWorkout = removeWorkout;
+const removeWorkouts = async (req, res) => {
+    try {
+        const { ids } = req.body;
+        if (!Array.isArray(ids)
+            || ids.length === 0
+            || ids.some((id) => typeof id !== 'string' || id.trim() === '')) {
+            res.status(400).json({ message: 'Workout ids are required' });
+            return;
+        }
+        const result = await (0, workoutService_1.deleteWorkouts)(getUserId(req), ids);
+        res.status(200).json({
+            message: 'Workouts deleted',
+            deletedCount: result.deletedCount,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            message: error instanceof Error ? error.message : 'Failed to delete workouts',
+        });
+    }
+};
+exports.removeWorkouts = removeWorkouts;

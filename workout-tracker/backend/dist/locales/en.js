@@ -9,8 +9,10 @@ exports.en = {
     actions: {
         addWorkout: 'Add workout',
         cancel: 'Cancel',
+        clearSelection: 'Clear selection',
         close: 'Close',
         dashboard: 'Dashboard',
+        deleteSelected: 'Delete selected',
         history: 'History',
         login: 'Login',
         logout: 'Logout',
@@ -54,6 +56,8 @@ exports.en = {
         copyTitle: 'Copy workout',
         detailTitle: 'Workout details',
         deleteConfirm: 'Delete workout?',
+        bulkDeleteConfirm: 'Delete {{count}} selected workouts?',
+        selectedCount: '{{count}} workouts selected',
     },
     progress: {
         title: 'Average progress',

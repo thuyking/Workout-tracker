@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWorkoutProgress = exports.deleteWorkout = exports.updateWorkout = exports.createWorkout = exports.getWorkoutById = exports.getWorkouts = void 0;
+exports.getWorkoutProgress = exports.deleteWorkouts = exports.deleteWorkout = exports.updateWorkout = exports.createWorkout = exports.getWorkoutById = exports.getWorkouts = void 0;
 const Workout_1 = require("../models/Workout");
 const getWorkouts = async (userId) => {
     return Workout_1.Workout.find({ user: userId }).sort({ workoutDate: -1 });
@@ -25,6 +25,13 @@ const deleteWorkout = async (userId, workoutId) => {
     return Workout_1.Workout.findOneAndDelete({ _id: workoutId, user: userId });
 };
 exports.deleteWorkout = deleteWorkout;
+const deleteWorkouts = async (userId, workoutIds) => {
+    return Workout_1.Workout.deleteMany({
+        _id: { $in: workoutIds },
+        user: userId,
+    });
+};
+exports.deleteWorkouts = deleteWorkouts;
 const normalizeTitle = (title) => title.trim().replace(/\s+/g, ' ').toLowerCase();
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const getStartDate = (range) => {

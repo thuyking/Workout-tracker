@@ -76,6 +76,13 @@ export const deleteWorkout = async (userId: string, workoutId: string) => {
   return Workout.findOneAndDelete({ _id: workoutId, user: userId })
 }
 
+export const deleteWorkouts = async (userId: string, workoutIds: string[]) => {
+  return Workout.deleteMany({
+    _id: { $in: workoutIds },
+    user: userId,
+  })
+}
+
 const normalizeTitle = (title: string) => title.trim().replace(/\s+/g, ' ').toLowerCase()
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

@@ -9,8 +9,10 @@ exports.vi = {
     actions: {
         addWorkout: 'Thêm bài tập',
         cancel: 'Hủy',
+        clearSelection: 'Bỏ chọn',
         close: 'Đóng',
         dashboard: 'Trang chủ',
+        deleteSelected: 'Xóa đã chọn',
         history: 'Lịch sử',
         login: 'Đăng nhập',
         logout: 'Đăng xuất',
@@ -54,6 +56,8 @@ exports.vi = {
         copyTitle: 'Sao chép bài tập',
         detailTitle: 'Chi tiết bài tập',
         deleteConfirm: 'Xóa bài tập?',
+        bulkDeleteConfirm: 'Xóa {{count}} bài tập đã chọn?',
+        selectedCount: 'Đã chọn {{count}} bài tập',
     },
     progress: {
         title: 'Tiến độ trung bình',
